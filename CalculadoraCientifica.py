@@ -12,9 +12,14 @@ button_config = {
     "activebackground":"#313454"
 }
 #List of digits that need a special  function (only for verification).
-digits = ["√","x²","C","n!","sin","cos","tan","sin-¹","cos-¹","tan-¹","π"]
+digits = ["√","x²","C","n!","sin","cos","tan","sin-¹","cos-¹","tan-¹","DEG","RAD"]
 #List of digits that will receive a custom bg
 numbers = ["1","2","3","4","5","6","7","8","9","0",".","="]
+#Constants that change if value is in radians or degrees
+convert_deg = 1
+convert_inverse_deg = 1
+#Control variable (used in change of degrees to radians or radians to degrees)
+cnt = 0
 
 
 class Calculator:
@@ -29,9 +34,12 @@ class Calculator:
         self.buttonsFrame.pack()
         #Display
         self.output = tk.Entry(self.displayFrame, 
-                               width=36, relief="sunken", bd=3, font=("Consolas bold",16),fg="#c9c9c5", bg="#242742")
+                               width=30, relief="sunken", bd=3, font=("Consolas bold",17),fg="#c9c9c5", bg="#242742")
         self.output.grid(row=0,column=0)
-
+        #Button to change to degrees or radians
+        self.change = tk.Button(self.displayFrame,
+                                button_config, width=3, height=0, text="DEG", bg="#e35124",command=self.degreesRadian)
+        self.change.grid(row=0,column=1)
         self.createButtons()
 
     def createButtons(self):
@@ -61,6 +69,8 @@ class Calculator:
                 b.grid(row = i, column = j)
 
     def buttonsAction(self, text):
+        global convert_deg
+        global convert_inverse_deg
         if text != "=":
             if text not in digits:
                 self.output.insert('end',text)
@@ -77,23 +87,41 @@ class Calculator:
                 elif text == "π":
                     self.addValue(3.1415926535897932)
                 elif text == "sin":
-                    self.addValue(math.sin(float(self.output.get())))
+                    print(convert_deg, convert_inverse_deg)
+                    self.addValue(math.sin(float(self.output.get()) * convert_deg))
                 elif text == "cos":
-                    self.addValue(math.cos(float(self.output.get())))
+                    self.addValue(math.cos(float(self.output.get()) * convert_deg))
                 elif text == "tan":
-                    self.addValue(math.tan(float(self.output.get())))
+                    self.addValue(math.tan(float(self.output.get()) * convert_deg))
                 elif text == "sin-¹":
-                    self.addValue(math.asin(float(self.output.get())))
+                    self.addValue(math.asin(float(self.output.get()) * convert_inverse_deg))
                 elif text == "cos-¹":
-                    self.addValue(math.acos(float(self.output.get())))
+                    self.addValue(math.acos(float(self.output.get()) * convert_inverse_deg))
                 elif text == "tan-¹":
-                    self.addValue(math.atan(float(self.output.get())))
+                    self.addValue(math.atan(float(self.output.get()) * convert_inverse_deg))
         else:
             self.addValue(eval(self.output.get()))
                     
     def addValue(self, value):
         self.output.delete(0, 'end')
         self.output.insert('end',value)
+
+    def degreesRadian(self):
+        global cnt
+        global convert_deg
+        global convert_inverse_deg
+        
+        if(cnt == 0): #If radians return to degrees
+            convert_deg = math.pi / 180
+            convert_inverse_deg = 180 / math.pi
+            self.change['text'] = "RAD"
+            cnt = 1
+        else: #If in degrees, return to radian
+            convert_deg = 1
+            convert_inverse_deg = 1
+            self.change['text'] = "DEG"
+            cnt = 0
+            
                             
 root = tk.Tk()
 Calculator(root)
