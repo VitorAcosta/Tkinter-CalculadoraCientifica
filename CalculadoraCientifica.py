@@ -87,18 +87,17 @@ class Calculator:
                 elif text == "π":
                     self.addValue(3.1415926535897932)
                 elif text == "sin":
-                    print(convert_deg, convert_inverse_deg)
                     self.addValue(math.sin(float(self.output.get()) * convert_deg))
                 elif text == "cos":
                     self.addValue(math.cos(float(self.output.get()) * convert_deg))
                 elif text == "tan":
                     self.addValue(math.tan(float(self.output.get()) * convert_deg))
                 elif text == "sin-¹":
-                    self.addValue(math.asin(float(self.output.get()) * convert_inverse_deg))
+                    self.addValue(math.asin(float(self.output.get())) * convert_inverse_deg)
                 elif text == "cos-¹":
-                    self.addValue(math.acos(float(self.output.get()) * convert_inverse_deg))
+                    self.addValue(math.acos(float(self.output.get())) * convert_inverse_deg)
                 elif text == "tan-¹":
-                    self.addValue(math.atan(float(self.output.get()) * convert_inverse_deg))
+                    self.addValue(math.atan(float(self.output.get())) * convert_inverse_deg)
         else:
             self.addValue(eval(self.output.get()))
                     
